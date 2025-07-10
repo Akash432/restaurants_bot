@@ -1,0 +1,1 @@
+Run create_day_bills.py to generate 3 Zomato-style bills.
