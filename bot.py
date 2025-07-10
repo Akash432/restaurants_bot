@@ -1,11 +1,15 @@
 import os
 import random
+import asyncio 
 import threading
 from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from fpdf import FPDF
 from datetime import datetime
+ # add this at the top if missing
+
+
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
@@ -92,6 +96,10 @@ def run_bot():
     print("✅ Starting Telegram bot...")
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("bill", bill_command))
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     print("✅ Bot is polling...")
     app.run_polling()
 
