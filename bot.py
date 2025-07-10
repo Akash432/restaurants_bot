@@ -1,16 +1,22 @@
 import os
 import random
+import threading
+from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from datetime import datetime
 from fpdf import FPDF
+from datetime import datetime
 
-# ====== CONFIG ======
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # Replace this
-DATA_DIR = "bills"  # Folder to store generated PDFs
+# Get bot token from environment variable
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+if not BOT_TOKEN:
+    raise Exception("BOT_TOKEN not set in environment variables!")
+
+# Output directory
+DATA_DIR = "bills"
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# ====== SAMPLE DATA ======
+# Sample data
 restaurants = [
     "Paradise Biryani, Secunderabad",
     "Pista House, Kondapur",
@@ -28,7 +34,9 @@ menu = [
 
 partners = ["Amaranath Ram", "Suresh M", "Karthik R", "Neha Joshi"]
 
-# ====== PDF Generator ======
+# =============================
+# PDF Generator
+# =============================
 def create_bill(meal: str, date_str: str) -> str:
     order_id = "7048" + str(random.randint(100000, 999999))
     filename = f"Order_ID_{order_id}.pdf"
@@ -88,25 +96,44 @@ def create_bill(meal: str, date_str: str) -> str:
     pdf.output(filepath)
     return filepath
 
-# ====== Telegram Command ======
+# =============================
+# Telegram Bot Command
+# =============================
 async def bill_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        date_input = context.args[0]  # from /bill 10-07-2025
+        date_input = context.args[0]
     except IndexError:
         await update.message.reply_text("Please use: /bill DD-MM-YYYY")
         return
 
-    paths = []
-    for meal in ["Breakfast", "Lunch", "Dinner"]:
-        pdf_path = create_bill(meal, date_input)
-        paths.append(pdf_path)
+    meals = ["Breakfast", "Lunch", "Dinner"]
+    paths = [create_bill(meal, date_input) for meal in meals]
 
     for path in paths:
         await update.message.reply_document(open(path, "rb"))
 
-# ====== Run Bot ======
-app = ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(CommandHandler("bill", bill_command))
-
-if __name__ == "__main__":
+# =============================
+# Run Telegram Bot in Thread
+# =============================
+def run_telegram_bot():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("bill", bill_command))
+    print("✅ Telegram bot started.")
     app.run_polling()
+
+# =============================
+# Flask App to Keep Render Happy
+# =============================
+web_app = Flask(__name__)
+
+@web_app.route('/')
+def index():
+    return "✅ Restaurant Bill Bot is Running!"
+
+# =============================
+# Entry Point
+# =============================
+if __name__ == "__main__":
+    threading.Thread(target=run_telegram_bot).start()
+    port = int(os.environ.get("PORT", 10000))
+    web_app.run(host="0.0.0.0", port=port)
