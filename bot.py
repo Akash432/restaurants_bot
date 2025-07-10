@@ -92,17 +92,22 @@ async def bill_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_document(open(path, "rb"))
 
 # ✅ TELEGRAM BOT FUNCTION
+
 def run_bot():
     print("✅ Starting Telegram bot...")
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("bill", bill_command))
+
+    async def run():
+        app = ApplicationBuilder().token(BOT_TOKEN).build()
+        app.add_handler(CommandHandler("bill", bill_command))
+        await app.initialize()
+        await app.start()
+        print("✅ Bot is polling (no signal handler)...")
+        await app.updater.start_polling()
+        await app.updater.idle()
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    print("✅ Bot is polling...")
-    app.run_polling()
-
+    loop.run_until_complete(run())
 # ✅ FLASK SERVER TO KEEP RENDER ALIVE
 app = Flask(__name__)
 
