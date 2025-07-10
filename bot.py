@@ -101,13 +101,15 @@ def run_bot():
         app.add_handler(CommandHandler("bill", bill_command))
         await app.initialize()
         await app.start()
-        print("✅ Bot is polling (no signal handler)...")
+        print("✅ Bot is polling (thread safe)...")
         await app.updater.start_polling()
-        await app.updater.idle()
+        # Removed idle — thread handles it
+        # await app.idle()  # no need
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(run())
+ 
 # ✅ FLASK SERVER TO KEEP RENDER ALIVE
 app = Flask(__name__)
 
