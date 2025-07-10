@@ -6,7 +6,7 @@ from datetime import datetime
 from fpdf import FPDF
 
 # ====== CONFIG ======
-BOT_TOKEN = "7961249380:AAHFbSUOu7JNf65y1UHIn9gRQgiaf3lWt6c"  # Replace this
+BOT_TOKEN = os.getenv("7961249380:AAHFbSUOu7JNf65y1UHIn9gRQgiaf3lWt6c")  # Replace this
 DATA_DIR = "bills"  # Folder to store generated PDFs
 os.makedirs(DATA_DIR, exist_ok=True)
 
