@@ -101,10 +101,10 @@ def run_bot():
         app.add_handler(CommandHandler("bill", bill_command))
         await app.initialize()
         await app.start()
-        print("✅ Bot is polling (thread safe)...")
-        await app.updater.start_polling()
-        # Removed idle — thread handles it
-        # await app.idle()  # no need
+        print("✅ Bot is fully live and listening!")
+        # Keep it running (simulate idle)
+        while True:
+            await asyncio.sleep(3600)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
