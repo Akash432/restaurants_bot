@@ -101,6 +101,7 @@ def run_bot():
 
         try:
             print("⚙️ Building Application...")
+            print(f"🔐 BOT_TOKEN starts with: {BOT_TOKEN[:10]}")
             app = ApplicationBuilder().token(BOT_TOKEN).build()
             print("✅ App built. Adding handlers now...")
 
