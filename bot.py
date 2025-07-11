@@ -97,41 +97,40 @@ def run_bot():
     print("✅ Starting Telegram bot...")
 
     async def run():
-    print("🟡 Entered run() function...")
-
-    try:
-        print("⚙️ Building Application...")
-        print(f"🔐 BOT_TOKEN starts with: {BOT_TOKEN[:10]}")  # Only first 10 chars, safe debug
+        print("🟡 Entered run() function...")
 
         try:
-            app = ApplicationBuilder().token(BOT_TOKEN).build()
-        except Exception as build_error:
-            print(f"❌ app.build() crashed: {build_error}")
-            return
+            print("⚙️ Building Application...")
+            print(f"🔐 BOT_TOKEN starts with: {BOT_TOKEN[:10]}")
 
-        print("✅ App built. Adding handlers now...")
+            try:
+                app = ApplicationBuilder().token(BOT_TOKEN).build()
+            except Exception as build_error:
+                print(f"❌ app.build() crashed: {build_error}")
+                return
 
-        try:
-            app.add_handler(CommandHandler("bill", bill_command))
-            print("🧩 Handlers added.")
-        except Exception as handler_error:
-            print(f"❌ Handler setup failed: {handler_error}")
-            return
+            print("✅ App built. Adding handlers now...")
 
-        print("🔧 Initializing bot...")
-        await app.initialize()
+            try:
+                app.add_handler(CommandHandler("bill", bill_command))
+                print("🧩 Handlers added.")
+            except Exception as handler_error:
+                print(f"❌ Handler setup failed: {handler_error}")
+                return
 
-        print("🚀 Starting bot...")
-        await app.start()
+            print("🔧 Initializing bot...")
+            await app.initialize()
 
-        print("✅ Bot is fully live and listening!")
+            print("🚀 Starting bot...")
+            await app.start()
 
-        # Keep it running
-        while True:
-            await asyncio.sleep(3600)
+            print("✅ Bot is fully live and listening!")
 
-    except Exception as e:
-        print(f"❌ Bot startup failed (outer catch): {e}")
+            while True:
+                await asyncio.sleep(3600)
+
+        except Exception as e:
+            print(f"❌ Bot startup failed (outer catch): {e}")
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
