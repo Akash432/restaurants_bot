@@ -105,6 +105,8 @@ def run_bot():
 
             try:
                 app = ApplicationBuilder().token(BOT_TOKEN).build()
+                print("✅ App object created:", app)
+
             except Exception as build_error:
                 print(f"❌ app.build() crashed: {build_error}")
                 return
