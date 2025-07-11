@@ -97,31 +97,41 @@ def run_bot():
     print("✅ Starting Telegram bot...")
 
     async def run():
-        print("🟡 Entered run() function...")
+    print("🟡 Entered run() function...")
+
+    try:
+        print("⚙️ Building Application...")
+        print(f"🔐 BOT_TOKEN starts with: {BOT_TOKEN[:10]}")  # Only first 10 chars, safe debug
 
         try:
-            print("⚙️ Building Application...")
-            print(f"🔐 BOT_TOKEN starts with: {BOT_TOKEN[:10]}")
             app = ApplicationBuilder().token(BOT_TOKEN).build()
-            print("✅ App built. Adding handlers now...")
+        except Exception as build_error:
+            print(f"❌ app.build() crashed: {build_error}")
+            return
 
+        print("✅ App built. Adding handlers now...")
 
-            print("🧩 Adding handlers...")
+        try:
             app.add_handler(CommandHandler("bill", bill_command))
+            print("🧩 Handlers added.")
+        except Exception as handler_error:
+            print(f"❌ Handler setup failed: {handler_error}")
+            return
 
-            print("🔧 Initializing bot...")
-            await app.initialize()
+        print("🔧 Initializing bot...")
+        await app.initialize()
 
-            print("🚀 Starting bot...")
-            await app.start()
+        print("🚀 Starting bot...")
+        await app.start()
 
-            print("✅ Bot is fully live and listening!")
+        print("✅ Bot is fully live and listening!")
 
-            while True:
-                await asyncio.sleep(3600)
+        # Keep it running
+        while True:
+            await asyncio.sleep(3600)
 
-        except Exception as e:
-            print(f"❌ Bot startup failed: {e}")
+    except Exception as e:
+        print(f"❌ Bot startup failed (outer catch): {e}")
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
