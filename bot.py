@@ -102,6 +102,8 @@ def run_bot():
         try:
             print("⚙️ Building Application...")
             app = ApplicationBuilder().token(BOT_TOKEN).build()
+            print("✅ App built. Adding handlers now...")
+
 
             print("🧩 Adding handlers...")
             app.add_handler(CommandHandler("bill", bill_command))
