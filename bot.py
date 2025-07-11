@@ -113,6 +113,7 @@ def run_bot():
         await app.start()
 
         print("✅ Bot is fully live and listening!")
+
         while True:
             await asyncio.sleep(3600)
 
