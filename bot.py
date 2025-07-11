@@ -97,14 +97,14 @@ def run_bot():
     print("✅ Starting Telegram bot...")
 
     async def run():
-        app = ApplicationBuilder().token(BOT_TOKEN).build()
-        app.add_handler(CommandHandler("bill", bill_command))
-        await app.initialize()
-        await app.start()
-        print("✅ Bot is fully live and listening!")
-        # Keep it running (simulate idle)
-        while True:
-            await asyncio.sleep(3600)
+    print("🟡 Entered run() function...")  # add this line
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("bill", bill_command))
+    await app.initialize()
+    await app.start()
+    print("✅ Bot is fully live and listening!")
+    while True:
+        await asyncio.sleep(3600)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
